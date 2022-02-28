@@ -13,7 +13,7 @@ const { expect } = require("chai");
 // `describe` receives the name of a section of your test suite, and a callback.
 // The callback must define the tests of that section. This callback can't be
 // an async function.
-describe("Token contract", function () {
+describe("HexDoge1155 contract", function () {
   // Mocha has four functions that let you hook into the the test runner's
   // lifecycle. These are: `before`, `beforeEach`, `after`, `afterEach`.
 
@@ -34,13 +34,13 @@ describe("Token contract", function () {
   // time. It receives a callback, which can be async.
   beforeEach(async function () {
     // Get the ContractFactory and Signers here.
-    Token = await ethers.getContractFactory("Token");
+    HexDoge1155 = await ethers.getContractFactory("HexDoge1155");
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
     // To deploy our contract, we just have to call Token.deploy() and await
     // for it to be deployed(), which happens onces its transaction has been
     // mined.
-    hardhatToken = await Token.deploy();
+    hardhatToken = await HexDoge1155.deploy();
 
     // We can interact with the contract by calling `hardhatToken.method()`
     await hardhatToken.deployed();
