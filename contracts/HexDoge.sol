@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
+import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol"; 
@@ -27,7 +28,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
  *
  * _Deprecated in favor of https://wizard.openzeppelin.com/[Contracts Wizard]._
  */
-contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pausable {
+contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pausable, ERC1155Holder {
     struct Metadata{
       string status;
       string category;
@@ -491,6 +492,10 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         //_mintBatch(to, ids, amounts, data);
     //}
 
+    function duplicate (uint256 id) public {
+      safeTransferFrom(_msgSender(), address(this), id, 1, "");
+    }
+
 
     function uri(uint256 tokenId) override public view 
     returns (string memory) { 
@@ -532,7 +537,7 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         public
         view
         virtual
-        override(AccessControlEnumerable, ERC1155)
+        override(AccessControlEnumerable, ERC1155, ERC1155Receiver)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
