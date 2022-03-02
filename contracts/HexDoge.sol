@@ -28,6 +28,17 @@ import "@openzeppelin/contracts/utils/Strings.sol";
  * _Deprecated in favor of https://wizard.openzeppelin.com/[Contracts Wizard]._
  */
 contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pausable {
+    struct Metadata{
+      string status;
+      uint256 DuplicateDuration;
+      uint256 DuplicateSuccessRate;
+      uint256 DuplicateEnergyEarn;
+      uint256 DuplicateDoneDate;
+      uint256 FixingEnergyCost;
+    }
+
+    mapping(uint256 => Metadata) public metadata;
+
     string public name = "HexDoge";
 
     uint256 public constant MINT_PRICE = 1;
@@ -45,6 +56,17 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
 
         _setupRole(MINTER_ROLE, _msgSender());
         _setupRole(PAUSER_ROLE, _msgSender());
+
+        for(uint i = 1; i <= 72; i++) {
+          metadata[i] = Metadata({
+            status: 'liveness',
+            DuplicateDuration: 1,
+            DuplicateSuccessRate: 70,
+            DuplicateEnergyEarn: 200,
+            DuplicateDoneDate: 1646241741,
+            FixingEnergyCost: 100
+          });
+        }
     }
 
     /**
