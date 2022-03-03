@@ -47,7 +47,7 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     uint256 public CURRENT_GENESIS_ID = 0;
-    uint256 public CURRENT_NORMAL_ID = 0;
+    uint256 public CURRENT_NORMAL_ID = 1000;
     uint256 constant MIN_HEX_GENESIS_ID = 1;
     uint256 constant MAX_HEX_GENESIS_ID = 36;
     uint256 constant MIN_HEX_NORMAL_ID = 1000;
@@ -77,7 +77,7 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
             status: 'liveness',
             category: 'genesis',
             DuplicateDuration: randomNumber % 100,
-            DuplicateSuccessRate: randomNumber % 100,
+            DuplicateSuccessRate: (randomNumber + 50) % 100,
             DuplicateEnergyEarn: randomNumber * 1000,
             DuplicateDoneDate: 0,
             FixingEnergyCost: randomNumber * 100
@@ -94,7 +94,7 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
             status: 'liveness',
             category: 'normal',
             DuplicateDuration: randomNumber % 100,
-            DuplicateSuccessRate: randomNumber % 100,
+            DuplicateSuccessRate: (randomNumber + 50) % 100,
             DuplicateEnergyEarn: randomNumber * 1000,
             DuplicateDoneDate: 0,
             FixingEnergyCost: randomNumber * 100
@@ -138,11 +138,11 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         // ownerList[to][0] = 1;
         // uint256 currentIndex = ownerList[to].length;
 
-        // uint256 randomNumber = uint256(blockhash(block.number - 1));
+        uint256 randomNumber = uint256(blockhash(block.number - 1));
         for(uint16 i = 0; i < amount; i++) {
             CURRENT_GENESIS_ID += 1;
             _mint(to, CURRENT_GENESIS_ID, 1, "");
-            generateGenesisHex(CURRENT_GENESIS_ID, 1);
+            generateGenesisHex(CURRENT_GENESIS_ID, randomNumber);
             token2ownerMap[CURRENT_GENESIS_ID] = msg.sender;
             ids[i] = CURRENT_GENESIS_ID;
         }
@@ -174,6 +174,9 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         if (metadata[tokenId].DuplicateSuccessRate < randomNumber) {
             metadata[tokenId].status = 'liveness';
             _mint(msg.sender, ENERGY_TOKEN_ID, metadata[tokenId].DuplicateEnergyEarn, "");
+            CURRENT_NORMAL_ID += 1;
+            _mint(msg.sender, CURRENT_NORMAL_ID, 1, "");
+             
         } else {
             metadata[tokenId].status = 'broken';
         }
