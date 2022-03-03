@@ -76,8 +76,8 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         metadata[tokenId] = Metadata({
             status: 'liveness',
             category: 'genesis',
-            DuplicateDuration: randomNumber % 100,
-            DuplicateSuccessRate: (randomNumber + 50) % 100,
+            DuplicateDuration: 10,
+            DuplicateSuccessRate: 50,
             DuplicateEnergyEarn: randomNumber * 1000,
             DuplicateDoneDate: 0,
             FixingEnergyCost: randomNumber * 100
@@ -138,7 +138,7 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         // ownerList[to][0] = 1;
         // uint256 currentIndex = ownerList[to].length;
 
-        uint256 randomNumber = uint256(blockhash(block.number - 1));
+        uint256 randomNumber = createRandom(1000);
         for(uint16 i = 0; i < amount; i++) {
             CURRENT_GENESIS_ID += 1;
             _mint(to, CURRENT_GENESIS_ID, 1, "");
@@ -148,6 +148,10 @@ contract HexDoge is Context, AccessControlEnumerable, ERC1155Burnable, ERC1155Pa
         }
 
         return ids;
+    }
+
+    function createRandom(uint number) public view returns(uint){
+        return uint(blockhash(block.number-1)) % number;
     }
 
     function doDuplicate(uint16 tokenId) public returns(uint256) {
